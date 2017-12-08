@@ -41,15 +41,15 @@ int main()
 	string helloString;
 	int aNumber = 1;
 	int * aNumberPointer;
-	int i, j;
+	int i, j, k, l;
 	node_t node1;
 	node_t node2;
 	node_t inputNodes[10];
-	node_t midNodes[10];
+	node_t midNodes[10][10];
 	node_t exitNodes[10];
 	//node_t tempNode;
 	synapse_t link1;
-	synapse_t links[60];
+	synapse_t links[30*11];
 	float tempCode;
 	
 	srand (time(NULL));
@@ -65,8 +65,11 @@ int main()
 	//setup mid nodes (may not be needed)
 	for (i = 0; i<10; i++)
 	{
-		midNodes[i].value = 0;
-		midNodes[i].threashold = 0.5;
+		for (k=0;k<10;k++)
+		{
+			midNodes[i][k].value = 0;
+			midNodes[i][k].threashold = 0.5;
+		}
 	}
 	
 	//setup exit nodes (may not be needed)
@@ -79,6 +82,8 @@ int main()
 	/*
 	 * Time to link the nodes together
 	 */
+	 // input to mid nodes
+	 l = 0;
 	 j = 0;
 	 for (i = 0; i<30; i++)
 	 {
@@ -86,12 +91,30 @@ int main()
 		 {
 			 j++;
 		 }
-		 links[i].inNode = &inputNodes[i%10];
-		 links[i].outNode = &midNodes[(i+j)%10];
-		 links[i].weight = 0.25;
-		 cout << "Done link: " << i << " " << links[i].weight << " : " << (*links[i].inNode).value << " : " << (*links[i].outNode).value << "\n";
+		 links[l].inNode = &inputNodes[i%10];
+		 links[l].outNode = &midNodes[(i+j)%10][0];
+		 links[l].weight = 0.25;
+		 cout << "Done link: " << l << " " << links[i].weight << " : " << (*links[i].inNode).value << " : " << (*links[i].outNode).value << "\n";
+		 l++;
 	 }
-	 
+	 //mid nodes to mid nodes
+	 	 j = 0;
+	 for (k=1;k<10;k++)
+	 {
+		for (i = 0; i<30; i++)
+		{
+			if (i%10 == 0 && i > 1)
+			{
+				j++;
+			}
+			links[l].inNode = &midNodes[i%10][k-1];
+			links[l].outNode = &midNodes[(i+j)%10][k];
+			links[l].weight = 0.25;
+			cout << "Done link: " << l << "::" << k << " " << links[i].weight << " : " << (*links[i].inNode).value << " : " << (*links[i].outNode).value << "\n";
+			l++;
+		}
+	 }
+	 //mid nodes to exit nodes
 	 j = 0;
 	 for (i = 30; i<60; i++)
 	 {
@@ -99,15 +122,15 @@ int main()
 		 {
 			 j++;
 		 }
-		 links[i].inNode = &midNodes[i%10];
-		 links[i].outNode = &exitNodes[(i+j)%10];
-		 links[i].weight = 0.25;
-		 cout << "Done link: " << i << " " << links[i].weight << " : " << (*links[i].inNode).value << " : " << (*links[i].outNode).value << "\n";
-
+		 links[l].inNode = &midNodes[i%10][10];
+		 links[l].outNode = &exitNodes[(i+j)%10];
+		 links[l].weight = 0.25;
+		 cout << "Done link: " << l << " " << links[i].weight << " : " << (*links[i].inNode).value << " : " << (*links[i].outNode).value << "\n";
+		 l++;
 	 }
 	 
 	 //time to update the nodes
-	for (i = 0; i<60; i++)
+	for (i = 0; i<(30*11); i++)
 	{	
 		if ((*links[i].inNode).value > (*links[i].inNode).threashold)
 		{
@@ -120,7 +143,7 @@ int main()
 	}
 	
 	cout <<"inputNodes[0] = "<< inputNodes[0].value<< "\n";
-	cout <<"midNodes[0] = "<< midNodes[0].value<< "\n";
+	cout <<"midNodes[0] = "<< midNodes[0][i].value<< "\n";
 	cout <<"outputNodes[0] = "<< exitNodes[0].value<< "\n";
 	for (i=0; i<10; i++)
 	{
