@@ -1,1 +1,13 @@
 Just a file to jot down ideas as they occure
+
+Currently there is an araray of 'entry nodes' and then a 2D array of 'middle nodes' and then an array of exit nodes.
+I have kept everythig to 10 nodes per level as it will make things silmpke ubtil I want to expand.
+
+Each node stores a value and each node stores a threashold where they will be considered to be on.
+I am not sure yet as to pass on the value when the threashold is reached or to pass on a simple on and off (both options weighted by the link).
+
+Each entry node has three links to the middle nodes and each middle node has 3 links to the next node and so on until the exit nodes.
+These links will be weighted.
+
+I still need to work out exactly how the system will learn from input and exactly what inmpact the inital genetic algorithms will have on creating the system.
+
